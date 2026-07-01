@@ -6,53 +6,70 @@ const SUPABASE_ANON_KEY = "sb_publishable_WLFClFLy-naog6lXmKzD1Q_wUpSwsDs";
 
 const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-// ---- 2. MATCHES ----
-// Add every match here before the tournament starts.
-// Once a match finishes, fill in "result" with the real score, then commit and push.
-// The leaderboard recalculates automatically once a result is filled in.
-const matches = [
-  {
-    id: "m1",
-    home: "Mexico",
-    away: "USA",
-    kickoff: "Jun 11, 2026",
-    result: null // e.g. { home: 2, away: 1 }
-  },
-  {
-    id: "m2",
-    home: "Canada",
-    away: "Argentina",
-    kickoff: "Jun 12, 2026",
-    result: null
-  },
-  {
-    id: "m3",
-    home: "Brazil",
-    away: "France",
-    kickoff: "Jun 13, 2026",
-    result: null
+// ---- 2. MATCHES (auto-loaded, free, no API key) ----
+// Data source: openfootball/worldcup.json - public domain World Cup 2026 fixtures and results.
+// It updates roughly once a day as real matches finish - no key, no signup, no rate limit.
+const FIXTURES_URL = "https://raw.githubusercontent.com/openfootball/worldcup.json/master/2026/worldcup.json";
+
+let matches = [];
+
+async function loadMatches() {
+  const matchListEl = document.getElementById("matchList");
+  matchListEl.innerHTML = `<p class="empty-note">Loading matches...</p>`;
+
+  let raw;
+  try {
+    const res = await fetch(FIXTURES_URL);
+    const data = await res.json();
+    raw = data.matches;
+  } catch (err) {
+    matchListEl.innerHTML = `<p class="empty-note">Couldn't load the fixture list right now. Try refreshing.</p>`;
+    console.error(err);
+    return;
   }
-];
+
+  // Only show matches with two real, already-known teams (early rounds list
+  // knockout slots as placeholders like "W101" before those teams are decided).
+  const usable = raw.filter((m) => m.team1 && m.team2 && !/^[WL]\d+$/.test(m.team1) && !/^[WL]\d+$/.test(m.team2));
+
+  matches = usable.map((m, i) => ({
+    id: "m" + i,
+    home: m.team1,
+    away: m.team2,
+    kickoff: `${m.round} · ${m.date}`,
+    result: m.score && m.score.ft ? { home: m.score.ft[0], away: m.score.ft[1] } : null
+  }));
+
+  renderMatchCards();
+  loadLeaderboard();
+}
 
 // ---- 3. RENDER MATCH CARDS ----
-const matchListEl = document.getElementById("matchList");
+function renderMatchCards() {
+  const matchListEl = document.getElementById("matchList");
+  matchListEl.innerHTML = "";
 
-matches.forEach((m) => {
-  const card = document.createElement("div");
-  card.className = "match-card";
-  card.innerHTML = `
-    <div class="match-teams">
-      <span class="fixture">${m.home} vs ${m.away}</span>
-      <span class="kickoff">${m.kickoff}</span>
-    </div>
-    <div class="match-score">
-      <input type="number" min="0" max="20" id="${m.id}-home" placeholder="0" aria-label="${m.home} score">
-      <span>–</span>
-      <input type="number" min="0" max="20" id="${m.id}-away" placeholder="0" aria-label="${m.away} score">
-    </div>
-  `;
-  matchListEl.appendChild(card);
-});
+  matches.forEach((m) => {
+    const played = !!m.result;
+    const card = document.createElement("div");
+    card.className = "match-card";
+    card.innerHTML = `
+      <div class="match-teams">
+        <span class="fixture">${m.home} vs ${m.away}</span>
+        <span class="kickoff">${m.kickoff}${played ? " · final: " + m.result.home + "–" + m.result.away : ""}</span>
+      </div>
+      <div class="match-score">
+        <input type="number" min="0" max="20" id="${m.id}-home" placeholder="0" aria-label="${m.home} score" ${played ? "disabled" : ""}>
+        <span>–</span>
+        <input type="number" min="0" max="20" id="${m.id}-away" placeholder="0" aria-label="${m.away} score" ${played ? "disabled" : ""}>
+      </div>
+    `;
+    matchListEl.appendChild(card);
+  });
+}
+
+loadMatches();
+
 
 // ---- 4. SUBMIT PREDICTIONS ----
 const submitBtn = document.getElementById("submitAll");
@@ -160,5 +177,3 @@ async function loadLeaderboard() {
     boardEl.appendChild(row);
   });
 }
-
-loadLeaderboard();
