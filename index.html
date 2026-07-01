@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Golden Guess — Free World Cup 2026 prediction pool</title>
+<meta name="description" content="Predict every World Cup 2026 match for free. Exact scores score highest. Top of the table wins the prize.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Work+Sans:wght@400;500;600&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap header-inner">
+    <span class="wordmark">Golden Guess</span>
+    <nav class="header-nav">
+      <a href="#matches">Matches</a>
+      <a href="#leaderboard">Table</a>
+      <a href="rules.html">Rules</a>
+    </nav>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="wrap hero-inner">
+    <p class="eyebrow">World Cup 2026 · Free to play</p>
+    <h1>Call the score.<br>Top the table.<br>Win it all.</h1>
+    <p class="hero-sub">No entry fee, no betting, no catch. Predict the exact scoreline of every match. The sharpest predictor at the end of the tournament takes the prize.</p>
+    <a href="#matches" class="btn-primary">Make your predictions</a>
+  </div>
+</section>
+
+<section class="scoring-band">
+  <div class="wrap scoring-inner">
+    <div class="score-rule">
+      <span class="score-points">3 pts</span>
+      <span class="score-label">Exact scoreline</span>
+    </div>
+    <div class="score-rule">
+      <span class="score-points">1 pt</span>
+      <span class="score-label">Right winner, wrong score</span>
+    </div>
+    <div class="score-rule">
+      <span class="score-points">0 pts</span>
+      <span class="score-label">Wrong winner</span>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="matches">
+  <div class="wrap">
+    <h2 class="section-title">Upcoming matches</h2>
+    <div class="name-field">
+      <label for="playerName">Playing as</label>
+      <input type="text" id="playerName" placeholder="Enter a name for the table">
+    </div>
+    <div id="matchList" class="match-list"></div>
+    <button id="submitAll" class="btn-primary submit-all">Submit predictions</button>
+    <p id="submitStatus" class="submit-status" role="status"></p>
+  </div>
+</section>
+
+<section class="section section-alt" id="leaderboard">
+  <div class="wrap">
+    <h2 class="section-title">The table</h2>
+    <div id="leaderboardBoard" class="scoreboard"></div>
+  </div>
+</section>
+
+<footer class="site-footer">
+  <div class="wrap footer-inner">
+    <p>Golden Guess is a free prediction pool. No purchase necessary. <a href="rules.html">Read the official rules</a>.</p>
+  </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
+<script src="app.js" defer></script>
+</body>
+</html>
