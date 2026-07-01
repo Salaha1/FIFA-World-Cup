@@ -1,8 +1,8 @@
 // ---- 1. CONNECT YOUR SUPABASE PROJECT ----
 // Replace these two values with your own project's URL and anon public key.
 // Find them in Supabase: Project Settings -> API.
-const SUPABASE_URL = "https://YOUR-PROJECT-REF.supabase.co";
-const SUPABASE_ANON_KEY = "YOUR-ANON-PUBLIC-KEY";
+const SUPABASE_URL = "https://sazapcvjnszudgacyxes.supabase.co/rest/v1/";
+const SUPABASE_ANON_KEY = "sb_publishable_WLFClFLy-naog6lXmKzD1Q_wUpSwsDs";
 
 const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
